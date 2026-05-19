@@ -1,0 +1,188 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+  });
+}
+
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<Layout title="Writing — Miguel Pereira" description="All writing by Miguel Pereira on CVD, CNA operations, OT/ICS security, and security research.">
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/writing" style="color: var(--accent)">Writing</a></li>
+        <li><a href="/conferences">Conferences</a></li>
+        <li><a href="/cv">CV</a></li>
+        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="writing-page">
+    <div class="writing-inner">
+
+      <header class="writing-header">
+        <p class="section-label">// Writing</p>
+        <h1 class="section-title">All posts</h1>
+        <p class="writing-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+      </header>
+
+      <!-- Tag filter -->
+      {tags.length > 1 && (
+        <div class="tag-filter" id="tag-filter">
+          <button class="tag-btn active" data-tag="all">All</button>
+          {tags.map((tag) => (
+            <button class="tag-btn" data-tag={tag}>{tag}</button>
+          ))}
+        </div>
+      )}
+
+      <!-- Post list -->
+      <div class="blog-list" id="post-list">
+        {posts.map((post) => (
+          <a href={`/blog/${post.id}`} class="blog-item" data-tags={post.data.tags.join(',')}>
+            <span class="blog-date">{formatDate(post.data.date)}</span>
+            <div class="blog-meta">
+              <span class="blog-title">{post.data.title}</span>
+              {post.data.description && (
+                <span class="blog-desc">{post.data.description}</span>
+              )}
+              <div class="blog-tags-row">
+                {post.data.tags.map((tag) => (
+                  <span class="blog-tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <span class="blog-arrow">&rarr;</span>
+          </a>
+        ))}
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-left">Portugal</span>
+      <div class="footer-right">
+        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="/rss.xml">RSS</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .writing-page {
+    min-height: calc(100svh - 60px);
+    padding: var(--section-pad);
+  }
+
+  .writing-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  .writing-header {
+    margin-bottom: 40px;
+  }
+
+  .writing-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: -36px;
+    text-align: right;
+    letter-spacing: 0.05em;
+  }
+
+  /* Tag filter */
+  .tag-filter {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .tag-btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .tag-btn:hover,
+  .tag-btn.active {
+    color: var(--accent);
+    border-color: rgba(57, 255, 142, 0.4);
+    background: var(--accent-dim);
+  }
+
+  /* Extend blog-item with description */
+  .blog-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 2px;
+  }
+
+  .blog-tags-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  .blog-item[data-hidden] {
+    display: none;
+  }
+
+  @media (max-width: 720px) {
+    .writing-count {
+      margin-top: 8px;
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  const filter = document.getElementById('tag-filter');
+  const list = document.getElementById('post-list');
+
+  filter?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.tag-btn');
+    if (!btn) return;
+
+    filter.querySelectorAll('.tag-btn').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const tag = btn.dataset.tag;
+    list?.querySelectorAll<HTMLElement>('.blog-item').forEach((item) => {
+      if (tag === 'all' || item.dataset.tags?.split(',').includes(tag ?? '')) {
+        delete item.dataset.hidden;
+      } else {
+        item.dataset.hidden = '';
+      }
+    });
+  });
+</script>

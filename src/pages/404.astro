@@ -1,0 +1,336 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="404 — Miguel Pereira" description="Page not found.">
+  <div class="e404">
+
+    <!-- Grid + scanline layer -->
+    <div class="e404-grid" aria-hidden="true"></div>
+    <div class="e404-scanline" aria-hidden="true"></div>
+
+    <!-- Nav (minimal) -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
+        <ul class="nav-links">
+          <li><a href="/#about">About</a></li>
+          <li><a href="/writing">Writing</a></li>
+          <li><a href="/conferences">Conferences</a></li>
+          <li><a href="/cv">CV</a></li>
+          <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="e404-main">
+
+      <!-- Glitch heading -->
+      <div class="glitch-wrap" aria-label="404">
+        <span class="glitch" data-text="404">404</span>
+      </div>
+
+      <p class="e404-sub">Route not found</p>
+
+      <!-- Terminal block -->
+      <div class="terminal" role="region" aria-label="Error trace">
+        <div class="terminal-bar">
+          <span class="t-dot t-red"></span>
+          <span class="t-dot t-yellow"></span>
+          <span class="t-dot t-green"></span>
+          <span class="t-title">bash — miguelpereira.org</span>
+        </div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-prompt">$</span> traceroute miguelpereira.org</div>
+          <div class="t-line t-dim">traceroute to miguelpereira.org, 30 hops max, 60 byte packets</div>
+          <div class="t-line"><span class="t-hop">1</span>  gateway (192.168.0.1) &nbsp;&nbsp; 1.204 ms</div>
+          <div class="t-line"><span class="t-hop">2</span>  10.0.0.1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8.441 ms</div>
+          <div class="t-line"><span class="t-hop">3</span>  <span class="t-warn">* * *</span></div>
+          <div class="t-line t-spacer"></div>
+          <div class="t-line"><span class="t-prompt">$</span> curl -I https://miguelpereira.org<span id="current-path" class="t-acc"></span></div>
+          <div class="t-line t-dim">HTTP/2  <span class="t-err">404</span>  Not Found</div>
+          <div class="t-line t-dim">server: astro/static</div>
+          <div class="t-line t-dim">content-type: text/html</div>
+          <div class="t-line t-spacer"></div>
+          <div class="t-line"><span class="t-prompt">$</span> <span class="t-cursor">▊</span></div>
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div class="e404-ctas">
+        <a href="/" class="btn btn-primary">← go home</a>
+        <a href="/#writing" class="btn btn-ghost">read my writing</a>
+      </div>
+
+    </main>
+
+    <!-- Live UTC clock -->
+    <div class="utc-clock" aria-live="polite">
+      <span class="utc-label">UTC</span>
+      <span id="utc-time">--:--:--</span>
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  /* ── Page shell ── */
+  .e404 {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* ── Grid texture ── */
+  .e404-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(57, 255, 142, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57, 255, 142, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Scanline sweep ── */
+  .e404-scanline {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(57, 255, 142, 0.03) 50%,
+      transparent 100%
+    );
+    background-size: 100% 200px;
+    animation: scanline 6s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes scanline {
+    0%   { background-position: 0 -200px; }
+    100% { background-position: 0 100vh; }
+  }
+
+  /* ── Main ── */
+  .e404-main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 80px;
+    gap: 28px;
+  }
+
+  /* ── Glitch 404 ── */
+  .glitch-wrap {
+    position: relative;
+    user-select: none;
+  }
+
+  .glitch {
+    font-family: var(--font-heading);
+    font-size: clamp(7rem, 22vw, 16rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: var(--text);
+    position: relative;
+    display: block;
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+  }
+
+  .glitch::before {
+    color: #ff3c6e;
+    animation: glitch-before 3.5s infinite steps(1);
+    clip-path: polygon(0 15%, 100% 15%, 100% 40%, 0 40%);
+  }
+
+  .glitch::after {
+    color: var(--accent);
+    animation: glitch-after 3.5s infinite steps(1);
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  }
+
+  @keyframes glitch-before {
+    0%,  90%  { transform: translate(0); opacity: 0; }
+    91%        { transform: translate(-4px, 2px); opacity: 1; }
+    92%        { transform: translate(4px, -2px); opacity: 1; }
+    93%        { transform: translate(-2px, 0); opacity: 1; clip-path: polygon(0 5%, 100% 5%, 100% 25%, 0 25%); }
+    94%        { transform: translate(3px, 1px); opacity: 1; clip-path: polygon(0 40%, 100% 40%, 100% 65%, 0 65%); }
+    95%        { transform: translate(0); opacity: 0; }
+    100%       { opacity: 0; }
+  }
+
+  @keyframes glitch-after {
+    0%,  88%  { transform: translate(0); opacity: 0; }
+    89%        { transform: translate(3px, -1px); opacity: 1; }
+    90%        { transform: translate(-3px, 2px); opacity: 1; clip-path: polygon(0 55%, 100% 55%, 100% 75%, 0 75%); }
+    91%        { transform: translate(2px, -3px); opacity: 1; clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); }
+    93%        { transform: translate(0); opacity: 0; }
+    100%       { opacity: 0; }
+  }
+
+  /* ── Subtitle ── */
+  .e404-sub {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: -12px;
+  }
+
+  /* ── Terminal ── */
+  .terminal {
+    width: 100%;
+    max-width: 560px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .t-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .t-red    { background: #ff5f57; }
+  .t-yellow { background: #febc2e; }
+  .t-green  { background: #28c840; }
+
+  .t-title {
+    margin-left: 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .terminal-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    line-height: 1.7;
+  }
+
+  .t-line {
+    color: var(--text);
+    white-space: pre;
+  }
+
+  .t-spacer { height: 6px; }
+
+  .t-dim  { color: var(--muted); }
+  .t-prompt { color: var(--accent); margin-right: 8px; }
+  .t-hop  { color: var(--muted); display: inline-block; width: 14px; }
+  .t-warn { color: #febc2e; }
+  .t-err  { color: #ff5f57; font-weight: 700; }
+  .t-acc  { color: var(--accent); }
+
+  .t-cursor {
+    color: var(--accent);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── CTAs ── */
+  .e404-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ── UTC clock ── */
+  .utc-clock {
+    position: fixed;
+    bottom: 20px;
+    right: 24px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .utc-label {
+    color: var(--accent);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid rgba(57, 255, 142, 0.25);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .glitch {
+      font-size: clamp(5rem, 28vw, 7rem);
+    }
+    .terminal {
+      font-size: 0.72rem;
+    }
+  }
+</style>
+
+<script>
+  // Inject current path into terminal
+  const pathEl = document.getElementById('current-path');
+  if (pathEl) pathEl.textContent = window.location.pathname;
+
+  // Live UTC clock
+  const clockEl = document.getElementById('utc-time');
+  function tick() {
+    if (!clockEl) return;
+    const now = new Date();
+    const hh = String(now.getUTCHours()).padStart(2, '0');
+    const mm = String(now.getUTCMinutes()).padStart(2, '0');
+    const ss = String(now.getUTCSeconds()).padStart(2, '0');
+    clockEl.textContent = `${hh}:${mm}:${ss}`;
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>
+</Layout>

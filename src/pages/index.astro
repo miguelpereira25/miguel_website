@@ -1,0 +1,208 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+  });
+}
+---
+
+<Layout>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#writing">Writing</a></li>
+        <li><a href="/conferences">Conferences</a></li>
+        <li><a href="/cv">CV</a></li>
+        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <span class="hero-label">Cybersecurity Analyst</span>
+      <h1 class="hero-name">Miguel<br />Pereira</h1>
+      <p class="hero-tagline">
+        Focused on coordinated vulnerability disclosure, CNA operations, and OT/ICS security.
+        Building better infrastructure for the way vulnerabilities get found, reported, and resolved.
+      </p>
+      <div class="hero-ctas">
+        <a href="#about" class="btn btn-primary">About me</a>
+        <a href="/cv" class="btn btn-ghost">My CV &rarr;</a>
+        <a href="#writing" class="btn btn-ghost">Writing &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Status row -->
+  <div class="status-row">
+    <div class="status-inner">
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span>PSIRT @ <strong>Siemens</strong></span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span>OWASP Leiria <strong>co-lead</strong></span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span>MSc <strong>in progress</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="section" id="about">
+    <div class="section-inner">
+      <p class="section-label">// About</p>
+      <h2 class="section-title">Background</h2>
+      <div class="about-grid">
+        <div class="about-bio">
+          <p>
+            I work in product security at <strong>Siemens</strong>, where I'm part of the PSIRT team
+            handling coordinated vulnerability disclosure for industrial and enterprise products.
+          </p>
+          <p>
+            My technical focus is on <strong>OT/ICS security</strong> — the security of operational
+            technology and industrial control systems, where the constraints are different: long asset
+            lifespans, legacy protocols, and consequences that extend beyond data loss into physical
+            systems.
+          </p>
+          <p>
+            Outside of work I co-lead <strong>OWASP Leiria</strong> and I'm finishing an MSc in
+            cybersecurity and forensics. I'm interested in the infrastructure layer of vulnerability
+            management — how disclosures get coordinated, how data quality compounds over time,
+            and what better tooling for the ecosystem might look like.
+          </p>
+        </div>
+        <div class="about-skills">
+          <p class="skills-title">Core competencies</p>
+          <div class="skill-list" id="skills">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">CVD / CNA Operations</span>
+                <span class="skill-pct">95%</span>
+              </div>
+              <div class="skill-track">
+                <div class="skill-bar" style="--target-width: 95%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">CVSS / CWE Analysis</span>
+                <span class="skill-pct">90%</span>
+              </div>
+              <div class="skill-track">
+                <div class="skill-bar" style="--target-width: 90%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">OT / ICS Security</span>
+                <span class="skill-pct">85%</span>
+              </div>
+              <div class="skill-track">
+                <div class="skill-bar" style="--target-width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Threat Intelligence</span>
+                <span class="skill-pct">80%</span>
+              </div>
+              <div class="skill-track">
+                <div class="skill-bar" style="--target-width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Python / Tooling</span>
+                <span class="skill-pct">75%</span>
+              </div>
+              <div class="skill-track">
+                <div class="skill-bar" style="--target-width: 75%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Blockchain / DLT</span>
+                <span class="skill-pct">70%</span>
+              </div>
+              <div class="skill-track">
+                <div class="skill-bar" style="--target-width: 70%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Writing / Blog -->
+  <section class="section" id="writing">
+    <div class="section-inner">
+      <p class="section-label">// Writing</p>
+      <h2 class="section-title">Latest posts</h2>
+      <div class="blog-list">
+        {posts.map((post) => (
+          <a href={`/blog/${post.id}`} class="blog-item">
+            <span class="blog-date">{formatDate(post.data.date)}</span>
+            <div class="blog-meta">
+              <span class="blog-title">{post.data.title}</span>
+              <span class="blog-tag">{post.data.tags[0]}</span>
+            </div>
+            <span class="blog-arrow">&rarr;</span>
+          </a>
+        ))}
+      </div>
+      <div class="writing-footer">
+        <a href="/writing" class="btn btn-ghost">See all posts &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-left">Portugal</span>
+      <div class="footer-right">
+        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="/rss.xml">RSS</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll<HTMLElement>('.skill-bar').forEach((bar) => {
+            bar.classList.add('animate');
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  const skills = document.getElementById('skills');
+  if (skills) observer.observe(skills);
+</script>

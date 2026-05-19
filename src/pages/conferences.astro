@@ -1,0 +1,500 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const conferences = [
+  { name: "VulnCon 2026",              city: "Scottsdale",    country: "USA",       year: 2026, role: "attendee", upcoming: true  },
+  { name: "38th FIRST Conference",     city: "Denver",        country: "USA",       year: 2026, role: "attendee", upcoming: true  },
+  { name: "RSA Conference 2026",       city: "San Francisco", country: "USA",       year: 2026, role: "attendee", upcoming: false },
+  { name: "37th FIRST Conference",     city: "Copenhagen",    country: "Denmark",   year: 2025, role: "attendee", upcoming: false },
+  { name: "Black Hat USA 2025",        city: "Las Vegas",     country: "USA",       year: 2025, role: "attendee", upcoming: false },
+  { name: "DEF CON 33",               city: "Las Vegas",     country: "USA",       year: 2025, role: "attendee", upcoming: false },
+  { name: "BSides Las Vegas 2025",     city: "Las Vegas",     country: "USA",       year: 2025, role: "attendee", upcoming: false },
+  { name: "Black Hat Europe 2025",     city: "London",        country: "UK",        year: 2025, role: "attendee", upcoming: false },
+  { name: "SecurityWeek ICS 2025",     city: "Atlanta",       country: "USA",       year: 2025, role: "attendee", upcoming: false },
+  { name: "BSides Lisbon 2025",        city: "Lisbon",        country: "Portugal",  year: 2025, role: "attendee", upcoming: false },
+  { name: "BSides Porto 2025",         city: "Porto",         country: "Portugal",  year: 2025, role: "attendee", upcoming: false },
+  { name: "Black Hat USA 2024",        city: "Las Vegas",     country: "USA",       year: 2024, role: "attendee", upcoming: false },
+  { name: "DEF CON 32",               city: "Las Vegas",     country: "USA",       year: 2024, role: "attendee", upcoming: false },
+  { name: "BSides Las Vegas 2024",     city: "Las Vegas",     country: "USA",       year: 2024, role: "attendee", upcoming: false },
+  { name: "Black Hat Asia 2024",       city: "Singapore",     country: "Singapore", year: 2024, role: "attendee", upcoming: false },
+  { name: "Black Hat Europe 2024",     city: "London",        country: "UK",        year: 2024, role: "attendee", upcoming: false },
+  { name: "SecurityWeek ICS 2024",     city: "Atlanta",       country: "USA",       year: 2024, role: "attendee", upcoming: false },
+  { name: "Black Hat Europe 2023",     city: "London",        country: "UK",        year: 2023, role: "attendee", upcoming: false },
+  { name: "SecurityWeek ICS 2023",     city: "Atlanta",       country: "USA",       year: 2023, role: "attendee", upcoming: false },
+  { name: "BSides Lisbon 2023",        city: "Lisbon",        country: "Portugal",  year: 2023, role: "attendee", upcoming: false },
+  { name: "Black Hat Europe 2022",     city: "London",        country: "UK",        year: 2022, role: "attendee", upcoming: false },
+];
+
+const total     = conferences.length;
+const countries = new Set(conferences.map(c => c.country)).size;
+const upcoming  = conferences.filter(c => c.upcoming).length;
+const years     = new Set(conferences.filter(c => !c.upcoming).map(c => c.year)).size;
+
+const allYears     = [...new Set(conferences.map(c => c.year))].sort((a, b) => b - a);
+const recentYears  = allYears.filter(y => y >= 2023);
+const hasOlder     = allYears.some(y => y < 2023);
+const olderMin     = hasOlder ? Math.min(...allYears.filter(y => y < 2023)) : null;
+
+// Groups: one per recent year + one "older" group if needed
+const recentGroups = recentYears.map(year => ({
+  key: String(year),
+  label: String(year),
+  entries: conferences.filter(c => c.year === year),
+}));
+
+const olderEntries = conferences.filter(c => c.year < 2023);
+const olderGroup   = hasOlder ? [{ key: 'older', label: `${olderMin} & earlier`, entries: olderEntries }] : [];
+
+const grouped = [...recentGroups, ...olderGroup];
+---
+
+<Layout title="Conferences — Miguel Pereira" description="Security conferences and events attended by Miguel Pereira.">
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/writing">Writing</a></li>
+        <li><a href="/conferences" style="color: var(--accent)">Conferences</a></li>
+        <li><a href="/cv">CV</a></li>
+        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="conf-page">
+    <div class="conf-inner">
+
+      <!-- Header -->
+      <header class="conf-header">
+        <p class="section-label">// Conferences & Events</p>
+        <h1 class="section-title" style="margin-bottom: 12px;">Where I've been</h1>
+        <p class="conf-subtitle">A log of security conferences and industry events I've attended.</p>
+      </header>
+
+      <!-- Stats row -->
+      <div class="conf-stats">
+        <div class="conf-stat">
+          <span class="conf-stat-num">{total}</span>
+          <span class="conf-stat-label">Events</span>
+        </div>
+        <div class="conf-stat-divider"></div>
+        <div class="conf-stat">
+          <span class="conf-stat-num">{countries}</span>
+          <span class="conf-stat-label">Countries</span>
+        </div>
+        <div class="conf-stat-divider"></div>
+        <div class="conf-stat">
+          <span class="conf-stat-num">{years}</span>
+          <span class="conf-stat-label">Years</span>
+        </div>
+        <div class="conf-stat-divider"></div>
+        <div class="conf-stat">
+          <span class="conf-stat-num conf-stat-accent">{upcoming}</span>
+          <span class="conf-stat-label">Upcoming</span>
+        </div>
+      </div>
+
+      <!-- Year filter -->
+      <div class="conf-filters" id="conf-filters">
+        <button class="tag-btn active" data-filter="all">All</button>
+        {recentYears.map(year => (
+          <button class="tag-btn" data-filter={String(year)}>{year}</button>
+        ))}
+        {hasOlder && (
+          <button class="tag-btn" data-filter="older">{olderMin} &amp; earlier</button>
+        )}
+        <div class="filter-sep" aria-hidden="true"></div>
+        <button class="tag-btn tag-btn-upcoming" data-filter="upcoming">Upcoming</button>
+      </div>
+
+      <!-- Role filter -->
+      <div class="conf-filters conf-role-filters" id="conf-role-filters">
+        <button class="tag-btn active" data-role="all">All roles</button>
+        <button class="tag-btn" data-role="attendee">Attendee</button>
+        <button class="tag-btn" data-role="presenter">Presenting</button>
+      </div>
+
+      <!-- Grouped list -->
+      <div id="conf-list">
+        {grouped.map(({ key, label, entries }) => (
+          <div class="conf-group" data-group-year={key}>
+            <div class="conf-year-heading">
+              <span class="conf-year-label">{label}</span>
+              <span class="conf-year-count">{entries.length}</span>
+            </div>
+            <div class="conf-entries">
+              {entries.map(conf => (
+                <div
+                  class:list={['conf-entry', { 'conf-entry-upcoming': conf.upcoming }]}
+                  data-year={conf.year >= 2023 ? String(conf.year) : 'older'}
+                  data-upcoming={conf.upcoming ? 'true' : 'false'}
+                  data-role={conf.role}
+                >
+                  <div class="conf-entry-main">
+                    <span class="conf-name">{conf.name}</span>
+                    <div class="conf-location">
+                      <span class="conf-dot"></span>
+                      <span>{conf.city !== 'TBA' ? `${conf.city}, ` : ''}{conf.country}</span>
+                    </div>
+                  </div>
+                  <div class="conf-entry-right">
+                    {conf.upcoming && <span class="conf-badge-upcoming">upcoming</span>}
+                    <span class:list={['conf-role', { 'conf-role-speaker': conf.role === 'speaker' }]}>
+                      {conf.role}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-left">Portugal</span>
+      <div class="footer-right">
+        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="/rss.xml">RSS</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .conf-page {
+    padding: var(--section-pad);
+    padding-top: 64px;
+  }
+
+  .conf-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .conf-header {
+    margin-bottom: 40px;
+  }
+
+  .conf-subtitle {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── Stats ── */
+  .conf-stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .conf-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .conf-stat-num {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .conf-stat-accent {
+    color: var(--accent);
+  }
+
+  .conf-stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .conf-stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    margin: 0 32px;
+    flex-shrink: 0;
+  }
+
+  /* ── Filters ── */
+  .conf-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .conf-filters .tag-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    color: #6b6b6b;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .conf-filters .tag-btn:hover {
+    color: #e8e6df;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .conf-filters .tag-btn.active {
+    background: rgba(57, 255, 142, 0.08);
+    border-color: rgba(57, 255, 142, 0.3);
+    color: #39ff8e;
+  }
+
+  .tag-btn-upcoming { margin-left: 4px; }
+
+  .conf-role-filters {
+    margin-top: -16px;
+    margin-bottom: 32px;
+  }
+
+  .filter-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    align-self: center;
+    flex-shrink: 0;
+    margin: 0 2px;
+  }
+
+  /* ── Year group ── */
+  .conf-group {
+    margin-bottom: 8px;
+  }
+
+  .conf-group[data-hidden] {
+    display: none;
+  }
+
+  .conf-year-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .conf-group:first-child .conf-year-heading {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .conf-year-label {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .conf-year-count {
+    font-size: 0.7rem;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 7px;
+    border-radius: 99px;
+  }
+
+  /* ── Entries ── */
+  .conf-entries {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .conf-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .conf-entry:last-child {
+    border-bottom: none;
+  }
+
+  .conf-entry[data-hidden] {
+    display: none;
+  }
+
+  .conf-entry-upcoming {
+    opacity: 0.55;
+  }
+
+  .conf-entry-main {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .conf-name {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .conf-entry:hover .conf-name {
+    color: var(--accent);
+  }
+
+  .conf-location {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .conf-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    box-shadow: 0 0 5px rgba(57, 255, 142, 0.5);
+  }
+
+  /* ── Right side ── */
+  .conf-entry-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .conf-badge-upcoming {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(57, 255, 142, 0.3);
+    padding: 2px 7px;
+    border-radius: var(--radius);
+  }
+
+  .conf-role {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 3px 9px;
+    border-radius: var(--radius);
+  }
+
+  .conf-role-speaker {
+    color: var(--accent);
+    border-color: rgba(57, 255, 142, 0.35);
+    background: var(--accent-dim);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .conf-stats {
+      padding: 16px 20px;
+      gap: 16px;
+    }
+
+    .conf-stat-divider {
+      display: none;
+    }
+
+    .conf-stat {
+      min-width: calc(50% - 16px);
+    }
+
+    .tag-btn-upcoming {
+      margin-left: 0;
+    }
+
+    .conf-name {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+  let activeYear = 'all';
+  let activeRole = 'all';
+
+  function applyFilters() {
+    document.querySelectorAll<HTMLElement>('.conf-group').forEach(group => {
+      let showGroup = false;
+
+      group.querySelectorAll<HTMLElement>('.conf-entry').forEach(entry => {
+        const entryYear  = entry.dataset.year!;
+        const isUpcoming = entry.dataset.upcoming === 'true';
+        const entryRole  = entry.dataset.role!;
+
+        const yearMatch =
+          activeYear === 'all'     ? true :
+          activeYear === 'upcoming'? isUpcoming :
+          entryYear === activeYear;
+
+        const roleMatch =
+          activeRole === 'all' ? true : entryRole === activeRole;
+
+        const show = yearMatch && roleMatch;
+
+        if (show) { delete entry.dataset.hidden; showGroup = true; }
+        else       { entry.dataset.hidden = ''; }
+      });
+
+      if (showGroup) delete group.dataset.hidden;
+      else           group.dataset.hidden = '';
+    });
+  }
+
+  document.getElementById('conf-filters')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.tag-btn');
+    if (!btn?.dataset.filter) return;
+    document.querySelectorAll('#conf-filters .tag-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeYear = btn.dataset.filter;
+    applyFilters();
+  });
+
+  document.getElementById('conf-role-filters')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.tag-btn');
+    if (!btn?.dataset.role) return;
+    document.querySelectorAll('#conf-role-filters .tag-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeRole = btn.dataset.role;
+    applyFilters();
+  });
+</script>

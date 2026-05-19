@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.filter((p) => !p.data.draft).map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-GB', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<Layout title={`${post.data.title} — Miguel Pereira`} description={post.data.description}>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/writing">Writing</a></li>
+        <li><a href="/conferences">Conferences</a></li>
+        <li><a href="/cv">CV</a></li>
+        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="post-page">
+    <a href="/#writing" class="post-back">&larr; Back</a>
+
+    <header class="post-header">
+      <div class="post-tags">
+        {post.data.tags.map((tag) => (
+          <span class="post-tag">{tag}</span>
+        ))}
+      </div>
+      <h1 class="post-title">{post.data.title}</h1>
+      <time class="post-date" datetime={post.data.date.toISOString()}>
+        {formatDate(post.data.date)}
+      </time>
+    </header>
+
+    <div class="post-body">
+      <Content />
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-left">Portugal</span>
+      <div class="footer-right">
+        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="/rss.xml">RSS</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
