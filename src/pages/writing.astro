@@ -24,7 +24,7 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
       <ul class="nav-links">
         <li><a href="/#about">About</a></li>
         <li><a href="/writing" style="color: var(--accent)">Writing</a></li>
-        <li><a href="/conferences">Conferences</a></li>
+        <li><a href="/conferences">Events</a></li>
         <li><a href="/cv">CV</a></li>
         <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
       </ul>
@@ -33,14 +33,12 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 
   <main class="writing-page">
     <div class="writing-inner">
-
       <header class="writing-header">
         <p class="section-label">// Writing</p>
         <h1 class="section-title">All posts</h1>
         <p class="writing-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
       </header>
 
-      <!-- Tag filter -->
       {tags.length > 1 && (
         <div class="tag-filter" id="tag-filter">
           <button class="tag-btn active" data-tag="all">All</button>
@@ -50,7 +48,6 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
         </div>
       )}
 
-      <!-- Post list -->
       <div class="blog-list" id="post-list">
         {posts.map((post) => (
           <a href={`/blog/${post.id}`} class="blog-item" data-tags={post.data.tags.join(',')}>
@@ -70,7 +67,6 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
           </a>
         ))}
       </div>
-
     </div>
   </main>
 
@@ -87,82 +83,24 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 </Layout>
 
 <style>
-  .writing-page {
-    min-height: calc(100svh - 60px);
-    padding: var(--section-pad);
-  }
+  .writing-page { min-height: calc(100svh - 64px); padding: var(--section-pad); }
+  .writing-inner { max-width: var(--max-w); margin: 0 auto; }
+  .writing-header { margin-bottom: 40px; }
+  .writing-count { font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted); margin-top: -36px; text-align: right; letter-spacing: 0.04em; }
 
-  .writing-inner {
-    max-width: var(--max-w);
-    margin: 0 auto;
-  }
-
-  .writing-header {
-    margin-bottom: 40px;
-  }
-
-  .writing-count {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: -36px;
-    text-align: right;
-    letter-spacing: 0.05em;
-  }
-
-  /* Tag filter */
-  .tag-filter {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 32px;
-  }
-
+  .tag-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
   .tag-btn {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 4px 12px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.15s;
+    font-family: var(--font-mono); font-size: 0.73rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); background: transparent; border: 1px solid var(--border);
+    padding: 5px 13px; border-radius: var(--radius); cursor: pointer; transition: all var(--transition);
   }
+  .tag-btn:hover, .tag-btn.active { color: var(--accent); border-color: var(--border-accent); background: var(--accent-soft); }
 
-  .tag-btn:hover,
-  .tag-btn.active {
-    color: var(--accent);
-    border-color: rgba(57, 255, 142, 0.4);
-    background: var(--accent-dim);
-  }
+  .blog-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-top: 2px; }
+  .blog-tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .blog-item[data-hidden] { display: none; }
 
-  /* Extend blog-item with description */
-  .blog-desc {
-    font-size: 0.8rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-top: 2px;
-  }
-
-  .blog-tags-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 6px;
-  }
-
-  .blog-item[data-hidden] {
-    display: none;
-  }
-
-  @media (max-width: 720px) {
-    .writing-count {
-      margin-top: 8px;
-      text-align: left;
-    }
-  }
+  @media (max-width: 720px) { .writing-count { margin-top: 8px; text-align: left; } }
 </style>
 
 <script>
@@ -172,10 +110,8 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
   filter?.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.tag-btn');
     if (!btn) return;
-
     filter.querySelectorAll('.tag-btn').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
-
     const tag = btn.dataset.tag;
     list?.querySelectorAll<HTMLElement>('.blog-item').forEach((item) => {
       if (tag === 'all' || item.dataset.tags?.split(',').includes(tag ?? '')) {

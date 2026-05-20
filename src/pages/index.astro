@@ -23,7 +23,7 @@ function formatDate(date: Date) {
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#writing">Writing</a></li>
-        <li><a href="/conferences">Conferences</a></li>
+        <li><a href="/conferences">Events</a></li>
         <li><a href="/cv">CV</a></li>
         <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
       </ul>
@@ -32,13 +32,30 @@ function formatDate(date: Date) {
 
   <!-- Hero -->
   <section class="hero" id="home">
+    <!-- Scan line animation -->
+    <div class="hero-scanline" aria-hidden="true"></div>
+
     <div class="hero-content">
       <span class="hero-label">Cybersecurity Analyst</span>
-      <h1 class="hero-name">Miguel<br />Pereira</h1>
+
+      <!-- Name with decorative accent line -->
+      <div class="hero-name-wrap">
+        <div class="hero-name-accent" aria-hidden="true"></div>
+        <h1 class="hero-name">Miguel<br />Pereira</h1>
+        <span class="hero-name-tag" aria-hidden="true">// PSIRT · CVD · OT/ICS</span>
+      </div>
+
       <p class="hero-tagline">
         Focused on coordinated vulnerability disclosure, CNA operations, and OT/ICS security.
         Building better infrastructure for the way vulnerabilities get found, reported, and resolved.
       </p>
+
+      <!-- Coordinate detail -->
+      <div class="hero-coord" aria-hidden="true">
+        <span class="hero-coord-dot"></span>
+        <span>40.641366° N, 8.653788° W · PT</span>
+      </div>
+
       <div class="hero-ctas">
         <a href="#about" class="btn btn-primary">About me</a>
         <a href="/cv" class="btn btn-ghost">My CV &rarr;</a>
@@ -74,7 +91,10 @@ function formatDate(date: Date) {
         <div class="about-bio">
           <p>
             I work in product security at <strong>Siemens</strong>, where I'm part of the PSIRT team
-            handling coordinated vulnerability disclosure for industrial and enterprise products.
+            handling coordinated vulnerability disclosure for industrial and enterprise products. I also
+            coordinate the team's <strong>conference monitoring</strong> service — staying close to
+            leaders, researchers, and strategic partners while tracking the research that may impact
+            our products.
           </p>
           <p>
             My technical focus is on <strong>OT/ICS security</strong> — the security of operational
@@ -187,6 +207,103 @@ function formatDate(date: Date) {
     </div>
   </footer>
 </Layout>
+
+<style>
+  /* ── Hero scan line ── */
+  .hero-scanline {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 212, 255, 0.018) 50%,
+      transparent 100%
+    );
+    background-size: 100% 220px;
+    animation: scanline 7s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes scanline {
+    0%   { background-position: 0 -220px; }
+    100% { background-position: 0 100vh; }
+  }
+
+  /* ── Name wrap ── */
+  .hero-name-wrap {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  /* Vertical accent line left of name */
+  .hero-name-accent {
+    position: absolute;
+    left: -20px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(
+      to bottom,
+      var(--accent),
+      var(--accent-secondary)
+    );
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.3);
+    opacity: 0.7;
+  }
+
+  .hero-name {
+    margin-bottom: 0;
+  }
+
+  /* Mono tag beneath name */
+  .hero-name-tag {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+
+  /* ── Coordinate detail ── */
+  .hero-coord {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 32px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(0, 212, 255, 0.02);
+  }
+
+  .hero-coord-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-secondary);
+    box-shadow: 0 0 6px rgba(123, 92, 245, 0.5);
+    flex-shrink: 0;
+  }
+
+  /* ── Responsive tweaks ── */
+  @media (max-width: 720px) {
+    .hero-name-accent {
+      left: -12px;
+      width: 2px;
+    }
+
+    .hero-coord {
+      font-size: 0.62rem;
+    }
+  }
+</style>
 
 <script>
   const observer = new IntersectionObserver(

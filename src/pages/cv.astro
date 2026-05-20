@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
       <ul class="nav-links">
         <li><a href="/#about">About</a></li>
         <li><a href="/writing">Writing</a></li>
-        <li><a href="/conferences">Conferences</a></li>
+        <li><a href="/conferences">Events</a></li>
         <li><a href="/cv" style="color: var(--accent)">CV</a></li>
         <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
       </ul>
@@ -28,7 +28,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
         <div class="cv-header-right">
           <div class="cv-contact">
-              <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">github.com/miguelpereira25</a>
+            <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">github.com/miguelpereira25</a>
             <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">linkedin.com/in/miguelpereira25</a>
             <span>Portugal · Category B licence</span>
           </div>
@@ -57,13 +57,15 @@ import Layout from '../layouts/Layout.astro';
                 <span class="cv-entry-company">Siemens ProductCERT / PSIRT</span>
               </div>
               <p class="cv-entry-desc">
-                CNA (CVE Numbering Authority) operations, vulnerability monitoring, and coordinated disclosure for industrial and enterprise products. MSc research thread on decentralised vulnerability databases running in parallel.
+                Started as a developer building and maintaining the team's internal vulnerability handling tools, then shifted into a security analyst role: CNA (CVE Numbering Authority) operations, vulnerability monitoring, and coordinated disclosure for industrial and enterprise products. Responsible for the conference monitoring service — attending key security conferences, building relationships with leaders, researchers, and strategic partners while tracking research and trends that may impact Siemens products. MSc research thread on decentralised vulnerability databases running in parallel.
               </p>
               <div class="cv-tags">
                 <span class="cv-tag">CVD</span>
                 <span class="cv-tag">CNA</span>
                 <span class="cv-tag">OT/ICS</span>
                 <span class="cv-tag">PSIRT</span>
+                <span class="cv-tag">Tooling</span>
+                <span class="cv-tag">Conference Monitoring</span>
               </div>
             </div>
           </div>
@@ -434,17 +436,19 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .cv-name {
+    font-family: var(--font-serif);
     font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-weight: 400;
+    letter-spacing: -0.02em;
     line-height: 1;
     margin-bottom: 8px;
   }
 
   .cv-role {
-    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
     color: var(--accent);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
@@ -453,14 +457,15 @@ import Layout from '../layouts/Layout.astro';
     flex-direction: column;
     gap: 4px;
     text-align: right;
-    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
     color: var(--muted);
     margin-bottom: 16px;
   }
 
   .cv-contact a {
     color: var(--muted);
-    transition: color 0.2s;
+    transition: color var(--transition);
   }
 
   .cv-contact a:hover {
@@ -487,8 +492,8 @@ import Layout from '../layouts/Layout.astro';
 
   .cv-section-title {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
     font-weight: 500;
@@ -536,21 +541,24 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .cv-date {
-    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.73rem;
     color: var(--muted);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     white-space: nowrap;
   }
 
   .cv-part-time {
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
-    border: 1px solid rgba(57, 255, 142, 0.25);
+    border: 1px solid var(--border-accent);
     padding: 1px 5px;
-    border-radius: 2px;
+    border-radius: var(--radius);
     width: fit-content;
+    background: var(--accent-glow);
   }
 
   .cv-entry-header {
@@ -561,9 +569,8 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .cv-entry-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-serif);
     font-size: 0.97rem;
-    font-weight: 600;
     color: var(--text);
   }
 
@@ -586,8 +593,9 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .cv-tag {
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--muted);
     border: 1px solid var(--border);
@@ -626,20 +634,25 @@ import Layout from '../layouts/Layout.astro';
     gap: 6px;
     padding: 14px 16px;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     background: var(--surface);
+    transition: border-color var(--transition);
+  }
+
+  .cv-lang:hover {
+    border-color: var(--border-accent);
   }
 
   .cv-lang-name {
-    font-family: var(--font-heading);
+    font-family: var(--font-serif);
     font-size: 0.95rem;
-    font-weight: 600;
     color: var(--text);
   }
 
   .cv-lang-level {
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
