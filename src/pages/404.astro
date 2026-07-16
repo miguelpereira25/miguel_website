@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
 ---
 
 <Layout title="404 — Miguel Pereira" description="Page not found.">
@@ -8,18 +9,7 @@ import Layout from '../layouts/Layout.astro';
     <div class="e404-glow" aria-hidden="true"></div>
     <div class="e404-scanline" aria-hidden="true"></div>
 
-    <nav class="nav">
-      <div class="nav-inner">
-        <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
-        <ul class="nav-links">
-          <li><a href="/#about">About</a></li>
-          <li><a href="/writing">Writing</a></li>
-          <li><a href="/conferences">Events</a></li>
-          <li><a href="/cv">CV</a></li>
-          <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
-        </ul>
-      </div>
-    </nav>
+    <Nav />
 
     <main class="e404-main">
 

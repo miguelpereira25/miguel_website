@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog'))
@@ -13,36 +15,35 @@ function formatDate(date: Date) {
     day: '2-digit',
   });
 }
+
+const skills = [
+  { name: 'CVD / CNA Operations', pct: 95 },
+  { name: 'CVSS / CWE Analysis', pct: 90 },
+  { name: 'OT / ICS Security', pct: 85 },
+  { name: 'Threat Intelligence', pct: 80 },
+  { name: 'Python / Tooling', pct: 75 },
+  { name: 'Blockchain / DLT', pct: 70 },
+];
 ---
 
 <Layout>
-  <!-- Nav -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#writing">Writing</a></li>
-        <li><a href="/conferences">Events</a></li>
-        <li><a href="/cv">CV</a></li>
-        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+  <Nav active="about" />
 
   <!-- Hero -->
   <section class="hero" id="home">
-    <!-- Scan line animation -->
     <div class="hero-scanline" aria-hidden="true"></div>
 
     <div class="hero-content">
       <span class="hero-label">Cybersecurity Analyst</span>
 
-      <!-- Name with decorative accent line -->
+      <!-- Name inside a HUD reticle frame -->
       <div class="hero-name-wrap">
-        <div class="hero-name-accent" aria-hidden="true"></div>
+        <i class="hud-corner hud-tl" aria-hidden="true"></i>
+        <i class="hud-corner hud-tr" aria-hidden="true"></i>
+        <i class="hud-corner hud-bl" aria-hidden="true"></i>
+        <i class="hud-corner hud-br" aria-hidden="true"></i>
         <h1 class="hero-name">Miguel<br />Pereira</h1>
-        <span class="hero-name-tag" aria-hidden="true">// PSIRT · CVD · OT/ICS</span>
+        <span class="hero-name-tag" id="hero-tag" aria-hidden="true">// PSIRT · CVD · OT/ICS</span>
       </div>
 
       <p class="hero-tagline">
@@ -85,10 +86,10 @@ function formatDate(date: Date) {
   <!-- About -->
   <section class="section" id="about">
     <div class="section-inner">
-      <p class="section-label">// About</p>
-      <h2 class="section-title">Background</h2>
+      <p class="section-label reveal">01 / About</p>
+      <h2 class="section-title reveal">Background</h2>
       <div class="about-grid">
-        <div class="about-bio">
+        <div class="about-bio reveal">
           <p>
             I work in product security at <strong>Siemens</strong>, where I'm part of the PSIRT team
             handling coordinated vulnerability disclosure for industrial and enterprise products. I also
@@ -109,63 +110,20 @@ function formatDate(date: Date) {
             and what better tooling for the ecosystem might look like.
           </p>
         </div>
-        <div class="about-skills">
+        <div class="about-skills reveal" style="--d: 0.15s">
           <p class="skills-title">Core competencies</p>
           <div class="skill-list" id="skills">
-            <div class="skill-item">
-              <div class="skill-header">
-                <span class="skill-name">CVD / CNA Operations</span>
-                <span class="skill-pct">95%</span>
+            {skills.map((skill) => (
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">{skill.name}</span>
+                  <span class="skill-pct">{skill.pct}%</span>
+                </div>
+                <div class="skill-track">
+                  <div class="skill-bar" style={`--target-width: ${skill.pct}%`}></div>
+                </div>
               </div>
-              <div class="skill-track">
-                <div class="skill-bar" style="--target-width: 95%"></div>
-              </div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-header">
-                <span class="skill-name">CVSS / CWE Analysis</span>
-                <span class="skill-pct">90%</span>
-              </div>
-              <div class="skill-track">
-                <div class="skill-bar" style="--target-width: 90%"></div>
-              </div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-header">
-                <span class="skill-name">OT / ICS Security</span>
-                <span class="skill-pct">85%</span>
-              </div>
-              <div class="skill-track">
-                <div class="skill-bar" style="--target-width: 85%"></div>
-              </div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-header">
-                <span class="skill-name">Threat Intelligence</span>
-                <span class="skill-pct">80%</span>
-              </div>
-              <div class="skill-track">
-                <div class="skill-bar" style="--target-width: 80%"></div>
-              </div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-header">
-                <span class="skill-name">Python / Tooling</span>
-                <span class="skill-pct">75%</span>
-              </div>
-              <div class="skill-track">
-                <div class="skill-bar" style="--target-width: 75%"></div>
-              </div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-header">
-                <span class="skill-name">Blockchain / DLT</span>
-                <span class="skill-pct">70%</span>
-              </div>
-              <div class="skill-track">
-                <div class="skill-bar" style="--target-width: 70%"></div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -175,11 +133,12 @@ function formatDate(date: Date) {
   <!-- Writing / Blog -->
   <section class="section" id="writing">
     <div class="section-inner">
-      <p class="section-label">// Writing</p>
-      <h2 class="section-title">Latest posts</h2>
-      <div class="blog-list">
-        {posts.map((post) => (
+      <p class="section-label reveal">02 / Writing</p>
+      <h2 class="section-title reveal">Latest posts</h2>
+      <div class="blog-list reveal">
+        {posts.map((post, i) => (
           <a href={`/blog/${post.id}`} class="blog-item">
+            <span class="blog-idx">{String(i + 1).padStart(2, '0')}</span>
             <span class="blog-date">{formatDate(post.data.date)}</span>
             <div class="blog-meta">
               <span class="blog-title">{post.data.title}</span>
@@ -189,23 +148,13 @@ function formatDate(date: Date) {
           </a>
         ))}
       </div>
-      <div class="writing-footer">
+      <div class="writing-footer reveal">
         <a href="/writing" class="btn btn-ghost">See all posts &rarr;</a>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="footer-left">Portugal</span>
-      <div class="footer-right">
-        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="/rss.xml">RSS</a>
-      </div>
-    </div>
-  </footer>
+  <Footer />
 </Layout>
 
 <style>
@@ -216,7 +165,7 @@ function formatDate(date: Date) {
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(0, 212, 255, 0.018) 50%,
+      var(--grid-line) 50%,
       transparent 100%
     );
     background-size: 100% 220px;
@@ -230,31 +179,31 @@ function formatDate(date: Date) {
     100% { background-position: 0 100vh; }
   }
 
-  /* ── Name wrap ── */
+  /* ── Name wrap + HUD reticle ── */
   .hero-name-wrap {
     position: relative;
-    margin-bottom: 24px;
+    width: fit-content;
+    padding: 22px 34px;
+    margin: 0 0 28px -34px;
   }
 
-  /* Vertical accent line left of name */
-  .hero-name-accent {
+  .hud-corner {
     position: absolute;
-    left: -20px;
-    top: 8px;
-    bottom: 8px;
-    width: 3px;
-    border-radius: 3px;
-    background: linear-gradient(
-      to bottom,
-      var(--accent),
-      var(--accent-secondary)
-    );
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.3);
-    opacity: 0.7;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--accent);
+    opacity: 0;
+    animation: hud-in 0.6s var(--ease-out) 0.9s forwards;
   }
 
-  .hero-name {
-    margin-bottom: 0;
+  .hud-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .hud-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .hud-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .hud-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+  @keyframes hud-in {
+    from { opacity: 0; transform: scale(1.6); }
+    to   { opacity: 0.55; transform: scale(1); }
   }
 
   /* Mono tag beneath name */
@@ -264,7 +213,19 @@ function formatDate(date: Date) {
     font-size: 0.72rem;
     letter-spacing: 0.08em;
     color: var(--muted);
-    margin-top: 12px;
+    margin-top: 14px;
+    min-height: 1.2em;
+  }
+
+  .hero-name-tag.typing::after {
+    content: '▊';
+    color: var(--accent);
+    animation: blink 0.9s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
   }
 
   /* ── Coordinate detail ── */
@@ -280,7 +241,7 @@ function formatDate(date: Date) {
     padding: 5px 12px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: rgba(0, 212, 255, 0.02);
+    background: var(--accent-glow);
   }
 
   .hero-coord-dot {
@@ -288,15 +249,20 @@ function formatDate(date: Date) {
     height: 5px;
     border-radius: 50%;
     background: var(--accent-secondary);
-    box-shadow: 0 0 6px rgba(123, 92, 245, 0.5);
+    box-shadow: 0 0 6px var(--accent-secondary);
     flex-shrink: 0;
   }
 
   /* ── Responsive tweaks ── */
   @media (max-width: 720px) {
-    .hero-name-accent {
-      left: -12px;
-      width: 2px;
+    .hero-name-wrap {
+      padding: 16px 20px;
+      margin-left: -20px;
+    }
+
+    .hud-corner {
+      width: 13px;
+      height: 13px;
     }
 
     .hero-coord {
@@ -306,6 +272,7 @@ function formatDate(date: Date) {
 </style>
 
 <script>
+  // Segmented meters fill on scroll into view
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -322,4 +289,24 @@ function formatDate(date: Date) {
 
   const skills = document.getElementById('skills');
   if (skills) observer.observe(skills);
+
+  // Type out the mono tag once the name has risen
+  const tag = document.getElementById('hero-tag');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (tag && !reduced) {
+    const text = tag.textContent ?? '';
+    tag.textContent = '';
+    tag.classList.add('typing');
+    let i = 0;
+    setTimeout(() => {
+      const timer = setInterval(() => {
+        i += 1;
+        tag.textContent = text.slice(0, i);
+        if (i >= text.length) {
+          clearInterval(timer);
+          setTimeout(() => tag.classList.remove('typing'), 1800);
+        }
+      }, 42);
+    }, 700);
+  }
 </script>

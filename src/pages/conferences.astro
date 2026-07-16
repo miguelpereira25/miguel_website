@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 
 const conferences = [
   { name: "38th FIRST Conference",     city: "Denver",        country: "USA",       year: 2026, role: "attendee", upcoming: true  },
@@ -26,6 +28,31 @@ const conferences = [
   { name: "Black Hat Europe 2022",     city: "London",        country: "UK",        year: 2022, role: "attendee", upcoming: false },
 ];
 
+const cityCoords: Record<string, [number, number]> = {
+  'Denver':        [39.74, -104.99],
+  'Scottsdale':    [33.49, -111.93],
+  'San Francisco': [37.77, -122.42],
+  'Leiria':        [39.74, -8.81],
+  'Copenhagen':    [55.68, 12.57],
+  'Las Vegas':     [36.17, -115.14],
+  'London':        [51.51, -0.13],
+  'Atlanta':       [33.75, -84.39],
+  'Lisbon':        [38.72, -9.14],
+  'Porto':         [41.15, -8.61],
+  'Singapore':     [1.35, 103.82],
+};
+
+const locations = Object.values(
+  conferences.reduce((acc, c) => {
+    const coords = cityCoords[c.city];
+    if (!coords) return acc;
+    acc[c.city] ??= { city: c.city, lat: coords[0], lon: coords[1], count: 0, upcoming: false };
+    acc[c.city].count += 1;
+    acc[c.city].upcoming ||= c.upcoming;
+    return acc;
+  }, {} as Record<string, { city: string; lat: number; lon: number; count: number; upcoming: boolean }>)
+);
+
 const total     = conferences.length;
 const countries = new Set(conferences.map(c => c.country)).size;
 const upcoming  = conferences.filter(c => c.upcoming).length;
@@ -51,50 +78,45 @@ const grouped = [...recentGroups, ...olderGroup];
 ---
 
 <Layout title="Conferences — Miguel Pereira" description="Security conferences and events attended by Miguel Pereira.">
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
-      <ul class="nav-links">
-        <li><a href="/#about">About</a></li>
-        <li><a href="/writing">Writing</a></li>
-        <li><a href="/conferences" style="color: var(--accent)">Events</a></li>
-        <li><a href="/cv">CV</a></li>
-        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+  <Nav active="events" />
 
   <main class="conf-page">
     <div class="conf-inner">
-      <header class="conf-header">
+      <header class="conf-header reveal">
         <p class="section-label">// Conferences & Events</p>
         <h1 class="section-title" style="margin-bottom: 12px;">Where I've been</h1>
         <p class="conf-subtitle">A log of security conferences and industry events I've attended.</p>
       </header>
 
-      <div class="conf-stats">
-        <div class="conf-stat">
-          <span class="conf-stat-num">{total}</span>
-          <span class="conf-stat-label">Events</span>
+      <div class="conf-overview reveal" style="--d: 0.08s">
+        <div class="conf-globe-panel">
+          <canvas id="globe-canvas" data-locations={JSON.stringify(locations)} aria-label="Rotating globe marking conference cities"></canvas>
+          <div class="globe-caption">
+            <span class="globe-caption-dot" aria-hidden="true"></span>
+            <span>{locations.length} cities logged</span>
+          </div>
         </div>
-        <div class="conf-stat-divider"></div>
-        <div class="conf-stat">
-          <span class="conf-stat-num">{countries}</span>
-          <span class="conf-stat-label">Countries</span>
-        </div>
-        <div class="conf-stat-divider"></div>
-        <div class="conf-stat">
-          <span class="conf-stat-num">{years}</span>
-          <span class="conf-stat-label">Years</span>
-        </div>
-        <div class="conf-stat-divider"></div>
-        <div class="conf-stat">
-          <span class="conf-stat-num conf-stat-accent">{upcoming}</span>
-          <span class="conf-stat-label">Upcoming</span>
+        <div class="conf-stats">
+          <div class="conf-stat">
+            <span class="conf-stat-num">{total}</span>
+            <span class="conf-stat-label">Events</span>
+          </div>
+          <div class="conf-stat">
+            <span class="conf-stat-num">{countries}</span>
+            <span class="conf-stat-label">Countries</span>
+          </div>
+          <div class="conf-stat">
+            <span class="conf-stat-num">{years}</span>
+            <span class="conf-stat-label">Years</span>
+          </div>
+          <div class="conf-stat">
+            <span class="conf-stat-num conf-stat-accent">{upcoming}</span>
+            <span class="conf-stat-label">Upcoming</span>
+          </div>
         </div>
       </div>
 
-      <div class="conf-filters" id="conf-filters">
+      <div class="conf-filters reveal" id="conf-filters" style="--d: 0.14s">
         <button class="tag-btn active" data-filter="all">All</button>
         {recentYears.map(year => (
           <button class="tag-btn" data-filter={String(year)}>{year}</button>
@@ -106,13 +128,13 @@ const grouped = [...recentGroups, ...olderGroup];
         <button class="tag-btn tag-btn-upcoming" data-filter="upcoming">Upcoming</button>
       </div>
 
-      <div class="conf-filters conf-role-filters" id="conf-role-filters">
+      <div class="conf-filters conf-role-filters reveal" id="conf-role-filters" style="--d: 0.18s">
         <button class="tag-btn active" data-role="all">All roles</button>
         <button class="tag-btn" data-role="attendee">Attendee</button>
         <button class="tag-btn" data-role="presenter">Presenting</button>
       </div>
 
-      <div id="conf-list">
+      <div id="conf-list" class="reveal" style="--d: 0.22s">
         {grouped.map(({ key, label, entries }) => (
           <div class="conf-group" data-group-year={key}>
             <div class="conf-year-heading">
@@ -149,16 +171,7 @@ const grouped = [...recentGroups, ...olderGroup];
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="footer-left">Portugal</span>
-      <div class="footer-right">
-        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="/rss.xml">RSS</a>
-      </div>
-    </div>
-  </footer>
+  <Footer />
 </Layout>
 
 <style>
@@ -167,17 +180,79 @@ const grouped = [...recentGroups, ...olderGroup];
   .conf-header { margin-bottom: 40px; }
   .conf-subtitle { font-size: 0.88rem; color: var(--muted); margin-top: 4px; }
 
-  .conf-stats {
-    display: flex; align-items: center; gap: 0;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 22px 32px;
-    margin-bottom: 32px; flex-wrap: wrap;
+  .conf-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: stretch;
   }
-  .conf-stat { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 80px; }
-  .conf-stat-num { font-family: var(--font-serif); font-size: 2rem; letter-spacing: -0.02em; line-height: 1; color: var(--text); }
+
+  .conf-globe-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    min-height: 340px;
+    overflow: hidden;
+  }
+
+  #globe-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  #globe-canvas.dragging {
+    cursor: grabbing;
+  }
+
+  .globe-caption {
+    position: absolute;
+    bottom: 14px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .globe-caption-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--glow);
+    animation: pulse-dot 2.5s ease-in-out infinite;
+  }
+
+  .conf-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .conf-stat {
+    display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 22px 26px;
+    transition: border-color var(--transition);
+  }
+  .conf-stat:hover { border-color: var(--border-accent); }
+  .conf-stat-num { font-family: var(--font-serif); font-size: 2.4rem; letter-spacing: -0.02em; line-height: 1; color: var(--text); }
   .conf-stat-accent { color: var(--accent); }
   .conf-stat-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .conf-stat-divider { width: 1px; height: 40px; background: var(--border); margin: 0 32px; flex-shrink: 0; }
 
   .conf-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
   .conf-filters .tag-btn {
@@ -186,7 +261,7 @@ const grouped = [...recentGroups, ...olderGroup];
     background: transparent; color: var(--muted); cursor: pointer;
     transition: color var(--transition), border-color var(--transition), background var(--transition);
   }
-  .conf-filters .tag-btn:hover { color: var(--text-secondary); border-color: rgba(255,255,255,0.12); }
+  .conf-filters .tag-btn:hover { color: var(--text-secondary); border-color: var(--border-accent); }
   .conf-filters .tag-btn.active { background: var(--accent-soft); border-color: var(--border-accent); color: var(--accent); }
   .tag-btn-upcoming { margin-left: 4px; }
   .conf-role-filters { margin-top: -16px; margin-bottom: 32px; }
@@ -208,7 +283,7 @@ const grouped = [...recentGroups, ...olderGroup];
   .conf-name { font-family: var(--font-serif); font-size: 1rem; color: var(--text); transition: color var(--transition); }
   .conf-entry:hover .conf-name { color: var(--accent); }
   .conf-location { display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
-  .conf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 6px rgba(0, 212, 255, 0.4); }
+  .conf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 6px var(--glow); }
 
   .conf-entry-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .conf-badge-upcoming { font-family: var(--font-mono); font-size: 0.63rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--border-accent); padding: 2px 7px; border-radius: var(--radius); background: var(--accent-glow); }
@@ -216,9 +291,10 @@ const grouped = [...recentGroups, ...olderGroup];
   .conf-role-speaker { color: var(--accent-secondary); border-color: rgba(123, 92, 245, 0.3); background: var(--accent2-soft); }
 
   @media (max-width: 720px) {
-    .conf-stats { padding: 16px 20px; gap: 16px; }
-    .conf-stat-divider { display: none; }
-    .conf-stat { min-width: calc(50% - 16px); }
+    .conf-overview { grid-template-columns: 1fr; }
+    .conf-globe-panel { min-height: 300px; }
+    .conf-stat { padding: 16px 20px; }
+    .conf-stat-num { font-size: 1.8rem; }
     .tag-btn-upcoming { margin-left: 0; }
     .conf-name { font-size: 0.9rem; }
   }
@@ -263,4 +339,291 @@ const grouped = [...recentGroups, ...olderGroup];
     activeRole = btn.dataset.role;
     applyFilters();
   });
+
+  // Count-up on the stat numbers when they scroll into view
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced) {
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target as HTMLElement;
+        statObserver.unobserve(el);
+        const target = parseInt(el.textContent ?? '0', 10);
+        if (!Number.isFinite(target)) return;
+        const start = performance.now();
+        const duration = 900;
+        const step = (now: number) => {
+          const p = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = String(Math.round(target * eased));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll<HTMLElement>('.conf-stat-num').forEach((el) => statObserver.observe(el));
+  }
+
+  // ── Rotating globe ──
+  import coastlines from '../data/coastlines.json';
+
+  const canvas = document.getElementById('globe-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const ctx = canvas.getContext('2d')!;
+    const locations = JSON.parse(canvas.dataset.locations ?? '[]') as
+      { city: string; lat: number; lon: number; count: number; upcoming: boolean }[];
+
+    const DEG = Math.PI / 180;
+    const TILT0 = 18 * DEG;
+    // Start over the Atlantic so both the US and Europe are in view
+    let rot = 40 * DEG;
+    let tilt = TILT0;
+    let zoom = 1;
+
+    let colors = readColors();
+    function readColors() {
+      const s = getComputedStyle(document.documentElement);
+      return {
+        accent: s.getPropertyValue('--accent').trim(),
+        accent2: s.getPropertyValue('--accent-secondary').trim(),
+        muted: s.getPropertyValue('--muted').trim(),
+        text: s.getPropertyValue('--text').trim(),
+      };
+    }
+    new MutationObserver(() => { colors = readColors(); })
+      .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas!.width = canvas!.clientWidth * dpr;
+      canvas!.height = canvas!.clientHeight * dpr;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    // Orthographic projection of a lat/lon point on the unit sphere,
+    // rotated by `rot` around the poles then tilted toward the viewer.
+    function project(lat: number, lon: number) {
+      const phi = lat * DEG;
+      const lam = lon * DEG + rot;
+      const x = Math.cos(phi) * Math.sin(lam);
+      const y = Math.sin(phi);
+      const z = Math.cos(phi) * Math.cos(lam);
+      return {
+        x,
+        y: y * Math.cos(tilt) - z * Math.sin(tilt),
+        z: y * Math.sin(tilt) + z * Math.cos(tilt),
+      };
+    }
+
+    function drawArc(points: { x: number; y: number; z: number }[], cx: number, cy: number, R: number) {
+      ctx.beginPath();
+      let pen = false;
+      for (const p of points) {
+        if (p.z <= 0) { pen = false; continue; }
+        const px = cx + p.x * R;
+        const py = cy - p.y * R;
+        if (pen) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+        pen = true;
+      }
+      ctx.stroke();
+    }
+
+    const reducedGlobe = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Interaction state: user input pauses the auto-spin; after 30s idle
+    // the view eases back to the default tilt/zoom and resumes spinning.
+    const IDLE_MS = 30000;
+    let autoMode = true;
+    let lastInteraction = -Infinity;
+    let recenterStart: number | null = null;
+    let recenterFrom = { tilt: TILT0, zoom: 1 };
+
+    function markInteraction() {
+      autoMode = false;
+      recenterStart = null;
+      lastInteraction = performance.now();
+    }
+
+    let elapsed = 0;
+    let last: number | null = null;
+
+    function draw(now: number) {
+      if (last !== null) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        elapsed += dt;
+        if (autoMode && !reducedGlobe) rot += dt * 0.12; // full revolution ≈ 52s
+      }
+      last = now;
+
+      if (recenterStart !== null) {
+        const p = reducedGlobe ? 1 : Math.min(1, (now - recenterStart) / 1200);
+        const e = 1 - Math.pow(1 - p, 3);
+        tilt = recenterFrom.tilt + (TILT0 - recenterFrom.tilt) * e;
+        zoom = recenterFrom.zoom + (1 - recenterFrom.zoom) * e;
+        if (p >= 1) {
+          recenterStart = null;
+          autoMode = true;
+        }
+      } else if (!autoMode && now - lastInteraction > IDLE_MS) {
+        recenterStart = now;
+        recenterFrom = { tilt, zoom };
+      }
+
+      const w = canvas!.width;
+      const h = canvas!.height;
+      const dpr = window.devicePixelRatio || 1;
+      const cx = w / 2;
+      const cy = h / 2;
+      const R = Math.min(w, h) * 0.42 * zoom;
+      ctx.clearRect(0, 0, w, h);
+
+      // Sphere outline
+      ctx.strokeStyle = colors.muted;
+      ctx.globalAlpha = 0.5;
+      ctx.lineWidth = dpr;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Graticule
+      ctx.globalAlpha = 0.13;
+      ctx.lineWidth = dpr * 0.75;
+      for (let lat = -60; lat <= 60; lat += 20) {
+        const pts = [];
+        for (let lon = 0; lon <= 360; lon += 4) pts.push(project(lat, lon));
+        drawArc(pts, cx, cy, R);
+      }
+      for (let lon = 0; lon < 360; lon += 20) {
+        const pts = [];
+        for (let lat = -84; lat <= 84; lat += 4) pts.push(project(lat, lon));
+        drawArc(pts, cx, cy, R);
+      }
+
+      // Continent outlines
+      ctx.strokeStyle = colors.text;
+      ctx.globalAlpha = 0.38;
+      ctx.lineWidth = dpr * 0.9;
+      for (const ring of coastlines as [number, number][][]) {
+        const pts = [];
+        for (const [lon, lat] of ring) pts.push(project(lat, lon));
+        drawArc(pts, cx, cy, R);
+      }
+
+      // Equator slightly brighter
+      ctx.strokeStyle = colors.accent;
+      ctx.globalAlpha = 0.16;
+      const eq = [];
+      for (let lon = 0; lon <= 360; lon += 4) eq.push(project(0, lon));
+      drawArc(eq, cx, cy, R);
+
+      // City markers, back first
+      const projected = locations
+        .map((loc) => ({ ...loc, p: project(loc.lat, loc.lon) }))
+        .sort((a, b) => a.p.z - b.p.z);
+
+      ctx.font = `${10 * dpr}px "IBM Plex Mono", monospace`;
+      for (const loc of projected) {
+        const px = cx + loc.p.x * R;
+        const py = cy - loc.p.y * R;
+        const color = loc.upcoming ? colors.accent2 : colors.accent;
+
+        if (loc.p.z <= 0) {
+          // Behind the sphere: faint ghost
+          ctx.globalAlpha = 0.10;
+          ctx.fillStyle = colors.muted;
+          ctx.beginPath();
+          ctx.arc(px, py, 1.6 * dpr, 0, Math.PI * 2);
+          ctx.fill();
+          continue;
+        }
+
+        const r = (2 + Math.min(2, loc.count * 0.4)) * dpr;
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 8 * dpr;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Upcoming cities get an expanding ping
+        if (loc.upcoming) {
+          const t = (elapsed % 2) / 2;
+          ctx.globalAlpha = (1 - t) * 0.5;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = dpr;
+          ctx.beginPath();
+          ctx.arc(px, py, r + t * 10 * dpr, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Label fades in as the city turns to face the viewer
+        if (loc.p.z > 0.55) {
+          ctx.globalAlpha = ((loc.p.z - 0.55) / 0.45) * 0.85;
+          ctx.fillStyle = colors.text;
+          ctx.fillText(loc.city, px + (r + 5 * dpr), py + 3 * dpr);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // ── Drag to orbit ──
+    let dragging = false;
+    let dragX = 0;
+    let dragY = 0;
+
+    canvas.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      dragX = e.clientX;
+      dragY = e.clientY;
+      canvas!.setPointerCapture(e.pointerId);
+      canvas!.classList.add('dragging');
+      markInteraction();
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const R = Math.min(canvas!.clientWidth, canvas!.clientHeight) * 0.42 * zoom;
+      rot += (e.clientX - dragX) / R;
+      tilt = Math.max(-75 * DEG, Math.min(75 * DEG, tilt + (e.clientY - dragY) / R));
+      dragX = e.clientX;
+      dragY = e.clientY;
+      markInteraction();
+    });
+
+    const endDrag = (e: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      canvas!.releasePointerCapture(e.pointerId);
+      canvas!.classList.remove('dragging');
+      markInteraction();
+    };
+    canvas.addEventListener('pointerup', endDrag);
+    canvas.addEventListener('pointercancel', endDrag);
+
+    // ── Scroll to zoom ──
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      zoom = Math.max(1, Math.min(3, zoom * Math.exp(-e.deltaY * 0.0012)));
+      markInteraction();
+    }, { passive: false });
+
+    // Render only while the panel is on screen
+    let raf = 0;
+    const loop = (t: number) => { draw(t); raf = requestAnimationFrame(loop); };
+    const globeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !raf) {
+          last = null;
+          raf = requestAnimationFrame(loop);
+        } else if (!entry.isIntersecting && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      });
+    }, { threshold: 0.05 });
+    globeObserver.observe(canvas);
+  }
 </script>

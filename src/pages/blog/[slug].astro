@@ -1,5 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -23,19 +25,9 @@ function formatDate(date: Date) {
 ---
 
 <Layout title={`${post.data.title} — Miguel Pereira`} description={post.data.description}>
-  <!-- Nav -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
-      <ul class="nav-links">
-        <li><a href="/#about">About</a></li>
-        <li><a href="/writing">Writing</a></li>
-        <li><a href="/conferences">Events</a></li>
-        <li><a href="/cv">CV</a></li>
-        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+  <div class="read-progress" aria-hidden="true"><span id="read-progress-bar"></span></div>
+
+  <Nav active="writing" />
 
   <main class="post-page">
     <a href="/#writing" class="post-back">&larr; Back</a>
@@ -57,15 +49,18 @@ function formatDate(date: Date) {
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="footer-left">Portugal</span>
-      <div class="footer-right">
-        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="/rss.xml">RSS</a>
-      </div>
-    </div>
-  </footer>
+  <Footer />
 </Layout>
+
+<script>
+  const bar = document.getElementById('read-progress-bar');
+  function updateProgress() {
+    if (!bar) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    bar.style.width = `${p * 100}%`;
+  }
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress, { passive: true });
+</script>

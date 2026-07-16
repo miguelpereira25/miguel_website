@@ -1,26 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="CV — Miguel Pereira" description="Curriculum vitae of Miguel Pereira — Security Engineer, PSIRT, CNA, OWASP Leiria co-lead.">
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
-      <ul class="nav-links">
-        <li><a href="/#about">About</a></li>
-        <li><a href="/writing">Writing</a></li>
-        <li><a href="/conferences">Events</a></li>
-        <li><a href="/cv" style="color: var(--accent)">CV</a></li>
-        <li><a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+  <Nav active="cv" />
 
   <main class="cv-page">
     <div class="cv-inner">
 
       <!-- Header -->
-      <header class="cv-header">
+      <header class="cv-header reveal">
         <div class="cv-header-left">
           <p class="section-label">// Curriculum Vitae</p>
           <h1 class="cv-name">Miguel Pereira</h1>
@@ -32,15 +23,15 @@ import Layout from '../layouts/Layout.astro';
             <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">linkedin.com/in/miguelpereira25</a>
             <span>Portugal · Category B licence</span>
           </div>
-          <a href="/cv.pdf" class="btn btn-primary cv-download" download>
+          <button type="button" id="cv-print" class="btn btn-primary cv-download">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download PDF
-          </a>
+            Save as PDF
+          </button>
         </div>
       </header>
 
       <!-- Experience -->
-      <section class="cv-section">
+      <section class="cv-section reveal">
         <h2 class="cv-section-title">
           <span>Experience</span>
         </h2>
@@ -172,7 +163,7 @@ import Layout from '../layouts/Layout.astro';
       </section>
 
       <!-- Education -->
-      <section class="cv-section">
+      <section class="cv-section reveal">
         <h2 class="cv-section-title"><span>Education</span></h2>
         <div class="cv-entries">
           <div class="cv-entry">
@@ -201,7 +192,7 @@ import Layout from '../layouts/Layout.astro';
       </section>
 
       <!-- Skills -->
-      <section class="cv-section">
+      <section class="cv-section reveal">
         <h2 class="cv-section-title"><span>Skills</span></h2>
         <div class="cv-skills-grid">
           <div class="skill-list" id="cv-skills-left">
@@ -259,16 +250,16 @@ import Layout from '../layouts/Layout.astro';
             <div class="skill-item">
               <div class="skill-header">
                 <span class="skill-name">ASP.NET · SQL · Java</span>
-                <span class="skill-pct">50%</span>
+                <span class="skill-pct">30%</span>
               </div>
-              <div class="skill-track"><div class="skill-bar" style="--target-width: 50%"></div></div>
+              <div class="skill-track"><div class="skill-bar" style="--target-width: 30%"></div></div>
             </div>
           </div>
         </div>
       </section>
 
       <!-- Network & Associations -->
-      <section class="cv-section">
+      <section class="cv-section reveal">
         <h2 class="cv-section-title"><span>Network & Associations</span></h2>
         <div class="cv-entries">
 
@@ -338,7 +329,7 @@ import Layout from '../layouts/Layout.astro';
       <!-- Projects & Volunteer -->
       <div class="cv-two-col">
 
-        <section class="cv-section">
+        <section class="cv-section reveal">
           <h2 class="cv-section-title"><span>Projects</span></h2>
           <div class="cv-entries">
             <div class="cv-entry">
@@ -353,7 +344,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </section>
 
-        <section class="cv-section">
+        <section class="cv-section reveal">
           <h2 class="cv-section-title"><span>Volunteer</span></h2>
           <div class="cv-entries">
             <div class="cv-entry">
@@ -371,7 +362,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
 
       <!-- Languages -->
-      <section class="cv-section">
+      <section class="cv-section reveal">
         <h2 class="cv-section-title"><span>Languages</span></h2>
         <div class="cv-langs">
           <div class="cv-lang">
@@ -400,16 +391,7 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="footer-left">Portugal</span>
-      <div class="footer-right">
-        <a href="https://github.com/miguelpereira25" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="/rss.xml">RSS</a>
-      </div>
-    </div>
-  </footer>
+  <Footer />
 </Layout>
 
 <style>
@@ -510,7 +492,7 @@ import Layout from '../layouts/Layout.astro';
     background: var(--border);
   }
 
-  /* ── Entries ── */
+  /* ── Entries — timeline spine down the body column ── */
   .cv-entries {
     display: flex;
     flex-direction: column;
@@ -520,17 +502,40 @@ import Layout from '../layouts/Layout.astro';
     display: grid;
     grid-template-columns: 160px 1fr;
     gap: 24px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
   }
 
   .cv-entry:last-child {
-    border-bottom: none;
     padding-bottom: 0;
   }
 
   .cv-entry:first-child {
     padding-top: 0;
+  }
+
+  .cv-entry-body {
+    position: relative;
+    padding-left: 22px;
+    border-left: 1px solid var(--border);
+  }
+
+  .cv-entry-body::before {
+    content: '';
+    position: absolute;
+    left: -4.5px;
+    top: 7px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface-raised);
+    border: 1px solid var(--muted);
+    transition: all var(--transition);
+  }
+
+  .cv-entry:hover .cv-entry-body::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--glow);
   }
 
   .cv-entry-date {
@@ -706,4 +711,6 @@ import Layout from '../layouts/Layout.astro';
   document.querySelectorAll<HTMLElement>('.cv-skills-grid .skill-list').forEach((el) => {
     observer.observe(el);
   });
+
+  document.getElementById('cv-print')?.addEventListener('click', () => window.print());
 </script>

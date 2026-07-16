@@ -1,0 +1,30 @@
+---
+interface Props {
+  active?: 'about' | 'writing' | 'events' | 'cv';
+}
+
+const { active } = Astro.props;
+
+const links = [
+  { href: '/#about', label: 'About', key: 'about' },
+  { href: '/writing', label: 'Writing', key: 'writing' },
+  { href: '/conferences', label: 'Events', key: 'events' },
+  { href: '/cv', label: 'CV', key: 'cv' },
+] as const;
+---
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
+    <ul class="nav-links">
+      {links.map((link) => (
+        <li>
+          <a href={link.href} class:list={[{ active: active === link.key }]}>{link.label}</a>
+        </li>
+      ))}
+      <li>
+        <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">Contact</a>
+      </li>
+    </ul>
+  </div>
+</nav>
