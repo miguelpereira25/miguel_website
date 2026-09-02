@@ -52,6 +52,67 @@ Mounts the project into a Node 22 Alpine container running `astro dev --host 0.0
 
 Create a new Markdown file under `src/content/blog/`. The collection schema is defined in `src/content.config.ts`; the file's slug becomes the URL at `/blog/<slug>`.
 
+```yaml
+---
+title: "What Does a PSIRT Actually Do?"
+date: 2026-04-06
+tags: ["explainer"]
+description: "Shown in the listing and used as the page description."
+draft: false
+---
+```
+
+`title`, `date`, and `tags` are required; `description` and `draft` are optional. Drafts are excluded from the listings, the RSS feed, and the build.
+
+### Articles published elsewhere
+
+To list a piece hosted on another site (a collaboration, a guest post, a vendor blog), add `externalUrl` and `publisher` to the frontmatter:
+
+```yaml
+---
+title: "Coordinated Disclosure in OT Environments"
+date: 2026-05-14
+tags: ["cvd", "collaboration"]
+description: "One or two sentences for the listing."
+publisher: "FIRST Blog"
+externalUrl: "https://www.first.org/blog/..."
+---
+```
+
+These entries sit in the same chronological list and tag filter as native posts, but link straight out to the publisher. No local page is generated at `/blog/<slug>`, so the Markdown body is never rendered — leave it empty or keep notes there. The listing shows the publisher as a source badge and a `↗` arrow, and the RSS item points at the original URL.
+
+`src/content/blog/_external-post-template.md` is a ready-to-copy template, kept out of the build with `draft: true`.
+
 ## Adding a conference / event
 
 Edit the `conferences` array at the top of `src/pages/conferences.astro`. Each entry takes `name`, `city`, `country`, `year`, `role`, and `upcoming`. Within a year, events display in array order.
+
+## Deployment
+
+Pushing to `main` builds and publishes the site to GitHub Pages at
+[miguelpereira.org](https://miguelpereira.org).
+
+`.github/workflows/deploy.yml` runs `withastro/action@v3` (pinned to Node 22, since
+`package.json` requires `>=22.12.0` and the action defaults to Node 20), then
+`actions/deploy-pages@v4`. No manual build or branch push is involved — `dist/` is
+never committed.
+
+One-time setup, for reference:
+
+- **Settings → Pages → Source: GitHub Actions.** Not "Deploy from a branch" — that
+  path builds with Jekyll and ignores the workflow.
+- **`public/CNAME`** holds the custom domain. Astro copies `public/` verbatim into
+  `dist/`, so the file survives every deploy. Without it, Pages drops the custom
+  domain and serves 404s.
+- **`site`** in `astro.config.mjs` must match the domain; it is what absolute URLs
+  in the RSS feed are built from.
+- **DNS** (Namecheap → Advanced DNS): four `A` records on `@` pointing at
+  `185.199.108.153`–`185.199.111.153`, plus a `CNAME` on `www` to
+  `<user>.github.io.`. An apex domain cannot use a `CNAME`, hence the literal IPs.
+- **HTTPS** is a free Let's Encrypt certificate GitHub issues and renews
+  automatically once the domain check passes. Enable *Enforce HTTPS* afterwards so
+  plain `http://` visitors are redirected.
+
+Anything under `public/` ships as-is — including `resume.pdf`, which the CV page's
+download button links to directly rather than generating via the browser print
+dialog.
