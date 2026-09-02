@@ -113,8 +113,12 @@ One-time setup, for reference:
   automatically once the domain check passes. Enable *Enforce HTTPS* afterwards so
   plain `http://` visitors are redirected.
 
-Anything under `public/` ships as-is, including `resume.pdf` — the CV page's
-button links to it directly. Before replacing that file, check it carries no
-personal contact details (email, phone) and no revealing document metadata: it is
-published at `/resume.pdf` the moment it is pushed. The `@media print` block in
-`global.css` still styles the page for anyone who prints it with Ctrl+P.
+Anything under `public/` ships as-is.
+
+No CV PDF is committed or served — `public/resume.pdf` is gitignored. The `/cv`
+page *is* the CV, and its "Save as PDF" button calls `window.print()`, so the
+browser generates a text-based PDF from the live page. The `@page` rule and
+`@media print` block at the end of `global.css` control that output: A4 with 13mm
+margins, forced light palette, navigation and buttons hidden, and `break-inside:
+avoid` on entries so experience items are not split across pages. Change the CV by
+editing `src/pages/cv.astro`; there is no second document to keep in sync.

@@ -939,7 +939,13 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
 }
 
 /* ── Print (used by the CV "Save as PDF" button) ── */
+@page {
+  size: A4;
+  margin: 13mm 12mm;
+}
+
 @media print {
+  /* Force the light palette regardless of the on-screen theme */
   :root, html[data-theme="light"], html[data-theme="dark"] {
     --bg: #ffffff;
     --surface: #ffffff;
@@ -949,8 +955,16 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
     --muted: #555555;
     --accent: #1a4a8a;
     --accent-secondary: #1a4a8a;
+    --accent-soft: rgba(26, 74, 138, 0.08);
+    --accent-glow: rgba(26, 74, 138, 0.08);
     --border: rgba(0, 0, 0, 0.18);
     --border-accent: rgba(0, 0, 0, 0.3);
+  }
+
+  /* Chrome/Safari drop background fills by default; keep the ones that carry meaning */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   body::after,
@@ -962,22 +976,87 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
     display: none !important;
   }
 
+  html {
+    font-size: 15px;
+  }
+
   body {
     background: #ffffff;
   }
 
+  /* Reveal animations never run in print - show everything */
   .reveal {
     opacity: 1 !important;
     transform: none !important;
   }
 
+  a {
+    color: inherit;
+  }
+
+  /* ── CV page geometry ── */
+  .cv-page {
+    min-height: 0;
+    padding: 0 !important;
+  }
+
+  .cv-inner {
+    max-width: none;
+  }
+
+  .cv-header {
+    padding-bottom: 16px;
+    margin-bottom: 4px;
+  }
+
+  .cv-name {
+    font-size: 2rem;
+  }
+
+  .cv-section {
+    padding: 14px 0;
+  }
+
+  .cv-entry {
+    padding: 7px 0;
+  }
+
+  /* ── Page-break control ── */
+  .cv-entry,
+  .skill-item,
+  .cv-lang,
+  .cv-header {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .cv-section-title,
+  .section-label {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .cv-section {
+    break-inside: auto;
+  }
+
+  p, li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Skill bars are animated in via JS; render them at full width on paper */
   .skill-bar {
     width: var(--target-width) !important;
     transition: none;
   }
 
-  a {
-    color: inherit;
+  /* Flatten screen-only depth effects */
+  .cv-stat,
+  .cv-entry,
+  .cv-tag,
+  .skill-track {
+    box-shadow: none !important;
   }
 }
 
