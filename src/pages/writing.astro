@@ -41,7 +41,13 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 
       <div class="blog-list reveal" id="post-list" style="--d: 0.1s">
         {posts.map((post, i) => (
-          <a href={`/blog/${post.id}`} class="blog-item" data-tags={post.data.tags.join(',')}>
+          <a
+            href={post.data.externalUrl ?? `/blog/${post.id}`}
+            class:list={['blog-item', { 'blog-item-external': post.data.externalUrl }]}
+            data-tags={post.data.tags.join(',')}
+            target={post.data.externalUrl ? '_blank' : undefined}
+            rel={post.data.externalUrl ? 'noopener' : undefined}
+          >
             <span class="blog-idx">{String(i + 1).padStart(2, '0')}</span>
             <span class="blog-date">{formatDate(post.data.date)}</span>
             <div class="blog-meta">
@@ -50,12 +56,15 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
                 <span class="blog-desc">{post.data.description}</span>
               )}
               <div class="blog-tags-row">
+                {post.data.publisher && (
+                  <span class="blog-publisher">{post.data.publisher}</span>
+                )}
                 {post.data.tags.map((tag) => (
                   <span class="blog-tag">{tag}</span>
                 ))}
               </div>
             </div>
-            <span class="blog-arrow">&rarr;</span>
+            <span class="blog-arrow">{post.data.externalUrl ? '\u2197' : '\u2192'}</span>
           </a>
         ))}
       </div>

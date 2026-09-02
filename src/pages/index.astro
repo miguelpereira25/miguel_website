@@ -137,14 +137,21 @@ const skills = [
       <h2 class="section-title reveal">Latest posts</h2>
       <div class="blog-list reveal">
         {posts.map((post, i) => (
-          <a href={`/blog/${post.id}`} class="blog-item">
+          <a
+            href={post.data.externalUrl ?? `/blog/${post.id}`}
+            class:list={['blog-item', { 'blog-item-external': post.data.externalUrl }]}
+            target={post.data.externalUrl ? '_blank' : undefined}
+            rel={post.data.externalUrl ? 'noopener' : undefined}
+          >
             <span class="blog-idx">{String(i + 1).padStart(2, '0')}</span>
             <span class="blog-date">{formatDate(post.data.date)}</span>
             <div class="blog-meta">
               <span class="blog-title">{post.data.title}</span>
-              <span class="blog-tag">{post.data.tags[0]}</span>
+              {post.data.publisher
+                ? <span class="blog-publisher">{post.data.publisher}</span>
+                : <span class="blog-tag">{post.data.tags[0]}</span>}
             </div>
-            <span class="blog-arrow">&rarr;</span>
+            <span class="blog-arrow">{post.data.externalUrl ? '\u2197' : '\u2192'}</span>
           </a>
         ))}
       </div>

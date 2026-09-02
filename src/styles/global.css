@@ -654,6 +654,20 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
   width: fit-content;
 }
 
+/* Source label for pieces published elsewhere */
+.blog-publisher {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border-accent);
+  background: var(--accent-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  width: fit-content;
+}
+
 .blog-arrow {
   color: var(--muted);
   font-size: 1.2rem;
@@ -667,6 +681,10 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
 .blog-item:hover .blog-arrow {
   color: var(--accent);
   transform: translateX(6px);
+}
+
+.blog-item-external:hover .blog-arrow {
+  transform: translate(4px, -4px);
 }
 
 /* ── Writing index footer ── */

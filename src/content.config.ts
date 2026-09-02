@@ -9,6 +9,10 @@ const blog = defineCollection({
     tags: z.array(z.string()),
     description: z.string().optional(),
     draft: z.boolean().optional(),
+    // Set both to list a piece published elsewhere; it links out
+    // instead of rendering a local post page.
+    externalUrl: z.string().url().optional(),
+    publisher: z.string().optional(),
   }),
 });
 
