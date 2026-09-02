@@ -26,5 +26,3 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Never commit the CV PDF - it carries personal contact details
-public/resume.pdf

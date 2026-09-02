@@ -113,7 +113,8 @@ One-time setup, for reference:
   automatically once the domain check passes. Enable *Enforce HTTPS* afterwards so
   plain `http://` visitors are redirected.
 
-Anything under `public/` ships as-is. Note that `public/resume.pdf` is gitignored
-on purpose: the CV PDF carries personal contact details, so it is not committed and
-not served. The CV page's button generates a PDF via the browser print dialog
-instead, styled by the `@media print` block in `global.css`.
+Anything under `public/` ships as-is, including `resume.pdf` — the CV page's
+button links to it directly. Before replacing that file, check it carries no
+personal contact details (email, phone) and no revealing document metadata: it is
+published at `/resume.pdf` the moment it is pushed. The `@media print` block in
+`global.css` still styles the page for anyone who prints it with Ctrl+P.
