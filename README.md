@@ -4,7 +4,7 @@ Personal site of Miguel Pereira — security engineer at Siemens ProductCERT / P
 
 ## Stack
 
-- **Astro 6** (static output, deployed to `https://miguelpereira.org`)
+- **Astro 6** (static output)
 - Plain CSS variables for theming (dark + light)
 - Markdown-driven blog via Astro content collections (`src/content/blog`)
 - Node 22+
