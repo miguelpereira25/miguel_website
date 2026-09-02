@@ -115,10 +115,12 @@ One-time setup, for reference:
 
 Anything under `public/` ships as-is.
 
-No CV PDF is committed or served — `public/resume.pdf` is gitignored. The `/cv`
-page *is* the CV, and its "Save as PDF" button calls `window.print()`, so the
-browser generates a text-based PDF from the live page. The `@page` rule and
-`@media print` block at the end of `global.css` control that output: A4 with 13mm
-margins, forced light palette, navigation and buttons hidden, and `break-inside:
-avoid` on entries so experience items are not split across pages. Change the CV by
-editing `src/pages/cv.astro`; there is no second document to keep in sync.
+The CV page's "Download CV" button serves `public/resume.html`, a self-contained
+HTML export of the CV. No PDF is committed or served — `public/resume.pdf` is
+gitignored. When you re-export, check the file carries no personal contact details
+before committing: it publishes at `/resume.html` on push.
+
+`/cv` also prints cleanly with Ctrl+P: the `@page` rule and `@media print` block at
+the end of `global.css` give A4 with 13mm margins, a forced light palette, hidden
+navigation and buttons, and `break-inside: avoid` so entries are not split across
+pages.

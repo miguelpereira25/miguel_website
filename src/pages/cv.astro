@@ -23,10 +23,10 @@ import Footer from '../components/Footer.astro';
             <a href="https://www.linkedin.com/in/miguelpereira25/" target="_blank" rel="noopener">linkedin.com/in/miguelpereira25</a>
             <span>Portugal · Category B licence</span>
           </div>
-          <button type="button" id="cv-print" class="btn btn-primary cv-download">
+          <a href="/resume.html" class="btn btn-primary cv-download" download="Miguel-Pereira-CV.html">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Save as PDF
-          </button>
+            Download CV
+          </a>
         </div>
       </header>
 
@@ -711,6 +711,4 @@ import Footer from '../components/Footer.astro';
   document.querySelectorAll<HTMLElement>('.cv-skills-grid .skill-list').forEach((el) => {
     observer.observe(el);
   });
-
-  document.getElementById('cv-print')?.addEventListener('click', () => window.print());
 </script>
