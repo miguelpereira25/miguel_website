@@ -27,5 +27,5 @@ pnpm-debug.log*
 .idea/
 
 
-# The CV is the /cv page itself; no PDF is committed or served
-public/resume.pdf
+# The CV is the /cv page itself; no downloadable copy is committed or served
+public/resume.*
