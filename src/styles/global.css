@@ -219,6 +219,40 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
   list-style: none;
 }
 
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.nav-toggle:hover {
+  border-color: var(--border-accent);
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  margin: 0 auto;
+  background: var(--text-secondary);
+  transition: transform 0.3s var(--ease-out), opacity 0.2s linear;
+}
+
+/* Bars fold into an X while the menu is open */
+.nav.open .nav-toggle-bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav.open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+.nav.open .nav-toggle-bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+
 .nav-links a {
   position: relative;
   font-family: var(--font-mono);
@@ -915,8 +949,50 @@ html[data-theme="light"] .theme-toggle .theme-icon-moon { display: none; }
     --section-pad: 64px 20px;
   }
 
+  .nav-toggle {
+    display: flex;
+  }
+
   .nav-links {
-    gap: 20px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 4px 20px 16px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out),
+      visibility 0.25s;
+  }
+
+  .nav.open .nav-links {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav-links li + li {
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 14px 4px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  /* The sliding underline is a pointer affordance; pointless in the panel */
+  .nav-links a::after {
+    display: none;
   }
 
   .about-grid {

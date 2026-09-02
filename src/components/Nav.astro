@@ -13,10 +13,24 @@ const links = [
 ] as const;
 ---
 
-<nav class="nav">
+<nav class="nav" id="site-nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">miguel<span>.</span>pereira</a>
-    <ul class="nav-links">
+
+    <button
+      type="button"
+      class="nav-toggle"
+      id="nav-toggle"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="nav-links"
+    >
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links">
       {links.map((link) => (
         <li>
           <a href={link.href} class:list={[{ active: active === link.key }]}>{link.label}</a>
@@ -28,3 +42,39 @@ const links = [
     </ul>
   </div>
 </nav>
+
+<script>
+  const nav = document.getElementById('site-nav');
+  const toggle = document.getElementById('nav-toggle');
+
+  if (nav && toggle) {
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(!nav.classList.contains('open'));
+    });
+
+    // Close after navigating, on Escape, or when tapping outside the nav.
+    nav.querySelectorAll('.nav-links a').forEach((a) =>
+      a.addEventListener('click', () => setOpen(false))
+    );
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('open') && !nav.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    });
+  }
+</script>
